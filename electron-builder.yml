@@ -1,0 +1,74 @@
+appId: com.comic4life.studio
+productName: Comic4Life
+copyright: Copyright © 2026 Comic4Life
+electronVersion: "35.1.5"
+
+directories:
+  output: release
+  buildResources: build
+
+files:
+  - dist/**/*
+  - electron/**/*
+  - package.json
+  - "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}"
+  - "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}"
+  - "!**/*.map"
+
+asar: true
+
+win:
+  icon: build/icon.ico
+  artifactName: "${productName}-${version}-win-${arch}.${ext}"
+  target:
+    - target: nsis
+      arch:
+        - x64
+    - target: portable
+      arch:
+        - x64
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Comic4Life
+  installerIcon: build/icon.ico
+  uninstallerIcon: build/icon.ico
+
+mac:
+  icon: build/icon.png
+  category: public.app-category.graphics-design
+  artifactName: "${productName}-${version}-mac-${arch}.${ext}"
+  target:
+    - target: dmg
+      arch:
+        - universal
+    - target: zip
+      arch:
+        - universal
+
+dmg:
+  title: "${productName} ${version}"
+
+linux:
+  icon: build/icon.png
+  category: Graphics;2DGraphics;
+  maintainer: Comic4Life <support@comic4life.local>
+  synopsis: Desktop comic creation studio
+  description: Desktop-grade comic book creation studio with panel layouts, speech balloons, lettering, templates, and high-resolution export.
+  artifactName: "${productName}-${version}-linux-${arch}.${ext}"
+  desktop:
+    entry:
+      Name: Comic4Life
+      Comment: Comic Book Creation Studio
+      Categories: Graphics;2DGraphics;
+  target:
+    - target: deb
+      arch:
+        - x64
+    - target: AppImage
+      arch:
+        - x64

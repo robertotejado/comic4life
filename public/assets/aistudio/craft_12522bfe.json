@@ -1,0 +1,651 @@
+{
+  "version": 2,
+  "name": "ComicLife3",
+  "request": "The same App, with all features and specifications pretty well operatives. Keeps the same aparience and Named as Comic4Life",
+  "target": {
+    "kind": "local",
+    "path": "C:\\Program Files (x86)\\plasq\\Comic Life 3\\ComicLife3.app\\Contents\\Windows\\ComicLife3.exe"
+  },
+  "stack": "Rust + egui (eframe)",
+  "status": "needs_you",
+  "note": "The build isn't working yet. No project to build found in app/ yet. Ask for a fix in the box below, or press Try again.",
+  "created_ms": 1794533267842,
+  "updated_ms": 1794835975673,
+  "checks": [
+    {
+      "round": 1,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794593994265
+    },
+    {
+      "round": 2,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794594361534
+    },
+    {
+      "round": 3,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794594421758
+    },
+    {
+      "round": 4,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794594439758
+    },
+    {
+      "round": 5,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794594450830
+    },
+    {
+      "round": 6,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794594459090
+    },
+    {
+      "round": 7,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794594468616
+    },
+    {
+      "round": 8,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794595522560
+    },
+    {
+      "round": 9,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794595532248
+    },
+    {
+      "round": 10,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794595552659
+    },
+    {
+      "round": 11,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794595562596
+    },
+    {
+      "round": 12,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794595602017
+    },
+    {
+      "round": 13,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794595615995
+    },
+    {
+      "round": 14,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794595660564
+    },
+    {
+      "round": 15,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794595877702
+    },
+    {
+      "round": 16,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794595885569
+    },
+    {
+      "round": 17,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794595894623
+    },
+    {
+      "round": 18,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794595904231
+    },
+    {
+      "round": 19,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794595914164
+    },
+    {
+      "round": 20,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794595924320
+    },
+    {
+      "round": 21,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794595933408
+    },
+    {
+      "round": 22,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794596035246
+    },
+    {
+      "round": 23,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794596043242
+    },
+    {
+      "round": 24,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794596051542
+    },
+    {
+      "round": 25,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794596060742
+    },
+    {
+      "round": 26,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794596079922
+    },
+    {
+      "round": 27,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794596088068
+    },
+    {
+      "round": 28,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794596096083
+    },
+    {
+      "round": 29,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794686473861
+    },
+    {
+      "round": 30,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794686482863
+    },
+    {
+      "round": 31,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794686491853
+    },
+    {
+      "round": 32,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794686501281
+    },
+    {
+      "round": 33,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794686509756
+    },
+    {
+      "round": 34,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794686520086
+    },
+    {
+      "round": 35,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794686531900
+    },
+    {
+      "round": 36,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794687094304
+    },
+    {
+      "round": 37,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794687102692
+    },
+    {
+      "round": 38,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794687111166
+    },
+    {
+      "round": 39,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794687120244
+    },
+    {
+      "round": 40,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794687129684
+    },
+    {
+      "round": 41,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794687138451
+    },
+    {
+      "round": 42,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794687147587
+    },
+    {
+      "round": 43,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794687335237
+    },
+    {
+      "round": 44,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794687343182
+    },
+    {
+      "round": 45,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794687352480
+    },
+    {
+      "round": 46,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794687363602
+    },
+    {
+      "round": 47,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794687374173
+    },
+    {
+      "round": 48,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794687383607
+    },
+    {
+      "round": 49,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794687391680
+    },
+    {
+      "round": 50,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794773577566
+    },
+    {
+      "round": 51,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794773719436
+    },
+    {
+      "round": 52,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794773727819
+    },
+    {
+      "round": 53,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794773735340
+    },
+    {
+      "round": 54,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794773744428
+    },
+    {
+      "round": 55,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794773751948
+    },
+    {
+      "round": 56,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794773760438
+    },
+    {
+      "round": 57,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794774217122
+    },
+    {
+      "round": 58,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794774243094
+    },
+    {
+      "round": 59,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794774251813
+    },
+    {
+      "round": 60,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794774359528
+    },
+    {
+      "round": 61,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794774368867
+    },
+    {
+      "round": 62,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794774386192
+    },
+    {
+      "round": 63,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794774394430
+    },
+    {
+      "round": 64,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794835887618
+    },
+    {
+      "round": 65,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794835898126
+    },
+    {
+      "round": 66,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794835908969
+    },
+    {
+      "round": 67,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794835925393
+    },
+    {
+      "round": 68,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794835943041
+    },
+    {
+      "round": 69,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794835964502
+    },
+    {
+      "round": 70,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "No project to build found in app/ yet.",
+      "artifacts": [],
+      "at_ms": 1794835975668
+    }
+  ],
+  "agent_session": "5bd8667e-1f73-4437-8273-b140420f2226",
+  "allowed_actions": [],
+  "last_reply": "",
+  "asset_budget_usd": 5.0,
+  "generate_assets": false
+}

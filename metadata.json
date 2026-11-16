@@ -1,0 +1,6 @@
+{
+  "name": "Comic4Life",
+  "description": "Desktop-grade comic book creation studio with panel layouts, speech balloons, lettering, image filters, templates, and high-resolution export.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
