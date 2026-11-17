@@ -268,7 +268,7 @@ export interface MediaAsset {
   id: string;
   name: string;
   url: string;
-  folder: 'Comic Panels' | 'My Photos' | 'Camera Captures';
+  folder: string;
   createdAt: number;
 }
 

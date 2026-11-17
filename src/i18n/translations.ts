@@ -176,6 +176,13 @@ export interface Translations {
   camera: string;
   noPhotos: string;
   uploadImage: string;
+  openFolder: string;
+  backToFolders: string;
+  allStyles: string;
+  panelTargetLabel: string;
+  balloonTargetLabel: string;
+  pageTargetLabel: string;
+  letteringTargetLabel: string;
   captureToPanel: string;
 
   // Canvas Status
@@ -433,6 +440,13 @@ const es: Translations = {
   replaceAllBtn: 'Reemplazar todo',
   matchCaseLabel: 'Mayús./minús.',
   matchesFound: '{count} coincidencias',
+  openFolder: 'Abrir carpeta...',
+  backToFolders: 'Carpetas',
+  allStyles: 'Todos',
+  panelTargetLabel: 'Viñeta',
+  balloonTargetLabel: 'Globo',
+  pageTargetLabel: 'Página',
+  letteringTargetLabel: 'Texto',
 
   inspector: 'Mostrar inspector',
   colors: 'Colores',
@@ -737,6 +751,13 @@ const en: Translations = {
   replaceAllBtn: 'Replace All',
   matchCaseLabel: 'Match case',
   matchesFound: '{count} matches',
+  openFolder: 'Open Folder...',
+  backToFolders: 'Folders',
+  allStyles: 'All',
+  panelTargetLabel: 'Panel',
+  balloonTargetLabel: 'Balloon',
+  pageTargetLabel: 'Page',
+  letteringTargetLabel: 'Text',
 
   inspector: 'Show Inspector',
   colors: 'Colors',
@@ -978,6 +999,13 @@ const fr: Translations = {
   replaceAllBtn: 'Tout remplacer',
   matchCaseLabel: 'Respecter la casse',
   matchesFound: '{count} résultats',
+  openFolder: 'Ouvrir un dossier...',
+  backToFolders: 'Dossiers',
+  allStyles: 'Tous',
+  panelTargetLabel: 'Case',
+  balloonTargetLabel: 'Bulle',
+  pageTargetLabel: 'Page',
+  letteringTargetLabel: 'Texte',
   duplicateSelection: 'Dupliquer',
   deleteSelection: 'Supprimer',
   previewComic: 'Aperçu BD',
@@ -1145,6 +1173,13 @@ const pt: Translations = {
   replaceAllBtn: 'Substituir tudo',
   matchCaseLabel: 'Diferenciar maiúsc.',
   matchesFound: '{count} resultados',
+  openFolder: 'Abrir pasta...',
+  backToFolders: 'Pastas',
+  allStyles: 'Todos',
+  panelTargetLabel: 'Quadro',
+  balloonTargetLabel: 'Balão',
+  pageTargetLabel: 'Página',
+  letteringTargetLabel: 'Texto',
   duplicateSelection: 'Duplicar seleção',
   deleteSelection: 'Excluir seleção',
   previewComic: 'Visualizar HQ',

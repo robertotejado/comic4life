@@ -1,7 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
+  ArrowLeft,
   Camera,
+  ChevronRight,
+  Folder,
   FolderOpen,
+  FolderPlus,
   Image as ImageIcon,
   Link as LinkIcon,
   Plus,
@@ -124,6 +128,7 @@ export const RightSidebar: React.FC<RightSidebarProps> = ({
   const [isMediaDragOver, setIsMediaDragOver] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const folderInputRef = useRef<HTMLInputElement>(null);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -196,41 +201,128 @@ export const RightSidebar: React.FC<RightSidebarProps> = ({
     onSelectMediaAsset(dataUrl);
   };
 
-  const handleFilesSelected = (files: FileList | null) => {
-    if (!files?.length) return;
-    const imageFiles = Array.from(files).filter((f) => f.type.startsWith('image/'));
-    if (!imageFiles.length) return;
+  const isImageFile = (file: File) =>
+    file.type.startsWith('image/') ||
+    /\.(png|jpe?g|webp|gif|bmp|svg|avif)$/i.test(file.name);
+
+  const loadFilesAsAssets = (
+    entries: Array<{ file: File; folder: string }>,
+    navigateToFolder?: string
+  ) => {
+    const valid = entries.filter((item) => isImageFile(item.file));
+    if (!valid.length) return;
 
     Promise.all(
-      imageFiles.map(
-        (file) =>
+      valid.map(
+        ({ file, folder }) =>
           new Promise<MediaAsset>((resolve) => {
             const reader = new FileReader();
             reader.onload = () => {
               resolve({
-                id: `up-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+                id: `up-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
                 name: file.name.replace(/\.[^.]+$/, '').toUpperCase(),
                 url: typeof reader.result === 'string' ? reader.result : '',
-                folder: 'My Photos',
+                folder: folder || 'My Photos',
                 createdAt: Date.now(),
               });
             };
+            reader.onerror = () =>
+              resolve({
+                id: `err-${Date.now()}`,
+                name: '',
+                url: '',
+                folder: folder || 'My Photos',
+                createdAt: Date.now(),
+              });
             reader.readAsDataURL(file);
           })
       )
     ).then((loaded) => {
-      onUploadMedia(loaded.filter((a) => Boolean(a.url)));
+      const clean = loaded.filter((a) => Boolean(a.url));
+      if (clean.length) {
+        onUploadMedia(clean);
+        if (navigateToFolder) {
+          setFolderFilter(navigateToFolder);
+        }
+      }
     });
+  };
+
+  const handleFilesSelected = (files: FileList | null) => {
+    if (!files?.length) return;
+    const targetFolder = folderFilter !== 'All' ? folderFilter : 'My Photos';
+    const items = Array.from(files).map((file) => ({
+      file,
+      folder: targetFolder,
+    }));
+    loadFilesAsAssets(items);
+  };
+
+  const handleFolderSelected = (files: FileList | null) => {
+    if (!files?.length) return;
+    const items: Array<{ file: File; folder: string }> = [];
+    let rootFolderName = '';
+    Array.from(files).forEach((file) => {
+      const rel = (file as File & { webkitRelativePath?: string }).webkitRelativePath || '';
+      const parts = rel.split('/').filter(Boolean);
+      const dir = parts.length > 1 ? parts.slice(0, -1).join('/') : 'My Photos';
+      if (!rootFolderName && parts.length > 1) {
+        rootFolderName = parts[0];
+      }
+      items.push({ file, folder: dir });
+    });
+    loadFilesAsAssets(items, rootFolderName || undefined);
+    if (rootFolderName) {
+      setBottomTab('explorer');
+    }
+  };
+
+  const readEntryRecursive = async (
+    entry: FileSystemEntry,
+    parentPath: string
+  ): Promise<Array<{ file: File; folder: string }>> => {
+    if (entry.isFile) {
+      return new Promise((resolve) => {
+        (entry as FileSystemFileEntry).file(
+          (file) => resolve([{ file, folder: parentPath || 'My Photos' }]),
+          () => resolve([])
+        );
+      });
+    }
+    if (entry.isDirectory) {
+      const dirEntry = entry as FileSystemDirectoryEntry;
+      const dirPath = parentPath ? `${parentPath}/${entry.name}` : entry.name;
+      const reader = dirEntry.createReader();
+      const allEntries: FileSystemEntry[] = [];
+      const readBatch = (): Promise<FileSystemEntry[]> =>
+        new Promise((resolve) => {
+          reader.readEntries(
+            (batch) => resolve(batch),
+            () => resolve([])
+          );
+        });
+      let batch = await readBatch();
+      while (batch.length > 0) {
+        allEntries.push(...batch);
+        batch = await readBatch();
+      }
+      const nested = await Promise.all(
+        allEntries.map((child) => readEntryRecursive(child, dirPath))
+      );
+      return nested.flat();
+    }
+    return [];
   };
 
   const handleAddExternalUrl = () => {
     const clean = urlDraft.trim();
     if (!clean) return;
+    const targetFolder = folderFilter !== 'All' ? folderFilter : 'My Photos';
     const newAsset: MediaAsset = {
       id: `url-${Date.now()}`,
       name: clean.split('/').pop()?.slice(0, 18).toUpperCase() || 'WEB IMAGE',
       url: clean,
-      folder: 'My Photos',
+      folder: targetFolder,
       createdAt: Date.now(),
     };
     onUploadMedia([newAsset]);
@@ -248,11 +340,75 @@ export const RightSidebar: React.FC<RightSidebarProps> = ({
     ...COMIC_TEMPLATES.filter((tpl) => tpl.group === 'Comics'),
   ];
 
+  // Dynamic folder list including built-in folders and any imported local folders/subfolders
+  const folderCountMap = new Map<string, number>();
+  ['Comic Panels', 'My Photos', 'Camera Captures'].forEach((baseFolder) => {
+    folderCountMap.set(baseFolder, 0);
+  });
+  mediaAssets.forEach((m) => {
+    const f = m.folder || 'My Photos';
+    folderCountMap.set(f, (folderCountMap.get(f) || 0) + 1);
+  });
+  const allFolderPaths = Array.from(folderCountMap.keys());
+
+  // Compute immediate child folders at the active folderFilter level (for Explorer view)
+  const currentChildFolders: Array<{
+    fullPath: string;
+    label: string;
+    totalCount: number;
+  }> = [];
+  if (bottomTab === 'explorer' && !searchQuery.trim()) {
+    const seenChild = new Set<string>();
+    const prefix = folderFilter === 'All' ? '' : `${folderFilter}/`;
+    allFolderPaths.forEach((fp) => {
+      if (folderFilter === 'All') {
+        const top = fp.split('/')[0];
+        if (!seenChild.has(top)) {
+          seenChild.add(top);
+          const count = mediaAssets.filter(
+            (m) => m.folder === top || m.folder.startsWith(`${top}/`)
+          ).length;
+          currentChildFolders.push({ fullPath: top, label: top, totalCount: count });
+        }
+      } else if (fp.startsWith(prefix)) {
+        const rest = fp.slice(prefix.length);
+        const childSeg = rest.split('/')[0];
+        if (childSeg) {
+          const full = `${folderFilter}/${childSeg}`;
+          if (!seenChild.has(full)) {
+            seenChild.add(full);
+            const count = mediaAssets.filter(
+              (m) => m.folder === full || m.folder.startsWith(`${full}/`)
+            ).length;
+            currentChildFolders.push({
+              fullPath: full,
+              label: childSeg,
+              totalCount: count,
+            });
+          }
+        }
+      }
+    });
+  }
+
   const filteredMedia = mediaAssets.filter((m) => {
-    const folderOk = folderFilter === 'All' || m.folder === folderFilter;
     const searchOk =
       !searchQuery.trim() ||
-      m.name.toLowerCase().includes(searchQuery.toLowerCase());
+      m.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      m.folder.toLowerCase().includes(searchQuery.toLowerCase());
+    if (searchQuery.trim()) {
+      return searchOk;
+    }
+    if (bottomTab === 'explorer') {
+      if (folderFilter === 'All') {
+        return false; // Root Explorer displays folders to open cleanly
+      }
+      return m.folder === folderFilter;
+    }
+    const folderOk =
+      folderFilter === 'All' ||
+      m.folder === folderFilter ||
+      m.folder.startsWith(`${folderFilter}/`);
     return folderOk && searchOk;
   });
 
@@ -398,10 +554,20 @@ export const RightSidebar: React.FC<RightSidebarProps> = ({
                   className="flex-1 min-w-0 h-6 bg-white border border-slate-400 rounded-xs px-1 text-[10px] font-medium text-slate-800 outline-none"
                 >
                   <option value="All">{t.allMedia}</option>
-                  <option value="Comic Panels">Comic Panels</option>
-                  <option value="My Photos">My Photos</option>
-                  <option value="Camera Captures">Camera Captures</option>
+                  {allFolderPaths.map((fp) => (
+                    <option key={fp} value={fp}>
+                      {fp}
+                    </option>
+                  ))}
                 </select>
+                <button
+                  type="button"
+                  onClick={() => folderInputRef.current?.click()}
+                  title={t.openFolder}
+                  className="h-6 px-1.5 bg-white hover:bg-amber-50 border border-slate-400 rounded-xs text-[10px] font-semibold text-slate-800 flex items-center gap-0.5 shrink-0"
+                >
+                  <FolderPlus className="w-3 h-3 text-amber-600" />
+                </button>
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
@@ -429,7 +595,22 @@ export const RightSidebar: React.FC<RightSidebarProps> = ({
                   accept="image/*"
                   multiple
                   className="hidden"
-                  onChange={(e) => handleFilesSelected(e.target.files)}
+                  onChange={(e) => {
+                    handleFilesSelected(e.target.files);
+                    e.target.value = '';
+                  }}
+                />
+                <input
+                  ref={folderInputRef}
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  {...({ webkitdirectory: '', directory: '' } as Record<string, string>)}
+                  className="hidden"
+                  onChange={(e) => {
+                    handleFolderSelected(e.target.files);
+                    e.target.value = '';
+                  }}
                 />
               </div>
 
@@ -456,15 +637,64 @@ export const RightSidebar: React.FC<RightSidebarProps> = ({
               )}
 
               {bottomTab === 'explorer' && (
-                <div className="relative">
-                  <Search className="w-3 h-3 text-slate-400 absolute left-2 top-1.5" />
-                  <input
-                    type="text"
-                    placeholder="Filter assets..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full h-6 pl-6 pr-2 bg-white border border-slate-400 rounded-xs text-[11px] outline-none"
-                  />
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-1">
+                    <div className="relative flex-1">
+                      <Search className="w-3 h-3 text-slate-400 absolute left-2 top-1.5" />
+                      <input
+                        type="text"
+                        placeholder="Filter assets..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full h-6 pl-6 pr-2 bg-white border border-slate-400 rounded-xs text-[11px] outline-none"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => folderInputRef.current?.click()}
+                      className="h-6 px-2 bg-white hover:bg-amber-50 border border-slate-400 rounded-xs text-[10px] font-semibold text-slate-800 flex items-center gap-1 shrink-0"
+                    >
+                      <FolderOpen className="w-3 h-3 text-amber-600" />
+                      <span className="max-w-[78px] truncate">{t.openFolder}</span>
+                    </button>
+                  </div>
+
+                  {/* Breadcrumb bar when browsing inside a folder */}
+                  {folderFilter !== 'All' && !searchQuery.trim() && (
+                    <div className="flex items-center gap-1 px-1 py-0.5 bg-white/80 border border-slate-300 rounded-xs text-[10px] text-slate-700 overflow-x-auto">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const parts = folderFilter.split('/');
+                          if (parts.length <= 1) setFolderFilter('All');
+                          else setFolderFilter(parts.slice(0, -1).join('/'));
+                        }}
+                        className="flex items-center gap-0.5 text-blue-700 hover:underline font-semibold shrink-0"
+                      >
+                        <ArrowLeft className="w-3 h-3" />
+                        <span>{t.backToFolders}</span>
+                      </button>
+                      {folderFilter.split('/').map((seg, i, arr) => {
+                        const targetPath = arr.slice(0, i + 1).join('/');
+                        return (
+                          <React.Fragment key={targetPath}>
+                            <ChevronRight className="w-2.5 h-2.5 text-slate-400 shrink-0" />
+                            <button
+                              type="button"
+                              onClick={() => setFolderFilter(targetPath)}
+                              className={`truncate max-w-[90px] ${
+                                i === arr.length - 1
+                                  ? 'font-bold text-slate-900'
+                                  : 'text-blue-700 hover:underline'
+                              }`}
+                            >
+                              {seg}
+                            </button>
+                          </React.Fragment>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -478,8 +708,29 @@ export const RightSidebar: React.FC<RightSidebarProps> = ({
                 if (!isMediaDragOver) setIsMediaDragOver(true);
               }}
               onDragLeave={() => setIsMediaDragOver(false)}
-              onDrop={(e) => {
+              onDrop={async (e) => {
                 setIsMediaDragOver(false);
+
+                // Support dropping folders or nested directory trees from Desktop / Explorer
+                const dtItems = e.dataTransfer.items
+                  ? Array.from(e.dataTransfer.items)
+                  : [];
+                const entries = dtItems
+                  .map((it) => it.webkitGetAsEntry?.())
+                  .filter((en): en is FileSystemEntry => Boolean(en));
+
+                if (entries.some((en) => en.isDirectory)) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  const firstDir = entries.find((en) => en.isDirectory)?.name;
+                  const nested = await Promise.all(
+                    entries.map((en) => readEntryRecursive(en, ''))
+                  );
+                  loadFilesAsAssets(nested.flat(), firstDir);
+                  if (firstDir) setBottomTab('explorer');
+                  return;
+                }
+
                 if (e.dataTransfer.files?.length) {
                   e.preventDefault();
                   e.stopPropagation();
@@ -501,26 +752,62 @@ export const RightSidebar: React.FC<RightSidebarProps> = ({
                       id: `url-${Date.now()}`,
                       name: clean.split('/').pop()?.slice(0, 18).toUpperCase() || 'WEB IMAGE',
                       url: clean,
-                      folder: 'My Photos',
+                      folder: folderFilter !== 'All' ? folderFilter : 'My Photos',
                       createdAt: Date.now(),
                     },
                   ]);
                 }
               }}
             >
-              {filteredMedia.length === 0 ? (
+              {/* Subfolders / Folders grid in Explorer tab */}
+              {bottomTab === 'explorer' && currentChildFolders.length > 0 && (
+                <div className="mb-2.5 space-y-1">
+                  {currentChildFolders.map((folderObj) => (
+                    <button
+                      key={folderObj.fullPath}
+                      type="button"
+                      onClick={() => setFolderFilter(folderObj.fullPath)}
+                      className="w-full flex items-center justify-between px-2 py-1.5 bg-slate-50 hover:bg-amber-50 border border-slate-200 hover:border-amber-400 rounded-xs text-left transition-colors group"
+                    >
+                      <span className="flex items-center gap-2 min-w-0">
+                        <Folder className="w-4 h-4 text-amber-500 fill-amber-200 shrink-0" />
+                        <span className="text-[11px] font-semibold text-slate-800 truncate">
+                          {folderObj.label}
+                        </span>
+                      </span>
+                      <span className="flex items-center gap-1 text-[10px] text-slate-500 shrink-0">
+                        <span className="tabular-nums bg-slate-200/80 px-1.5 rounded-full text-[9px] font-semibold text-slate-700">
+                          {folderObj.totalCount}
+                        </span>
+                        <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-amber-600" />
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {filteredMedia.length === 0 && currentChildFolders.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center p-4 text-slate-400">
                   <ImageIcon className="w-7 h-7 mb-1.5 opacity-60" />
                   <p className="text-[11px] font-medium">{t.noPhotos}</p>
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="mt-2 px-2.5 py-1 bg-blue-600 text-white rounded text-[11px] font-medium hover:bg-blue-700"
-                  >
-                    {t.uploadImage}
-                  </button>
+                  <div className="mt-2 flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="px-2.5 py-1 bg-blue-600 text-white rounded text-[11px] font-medium hover:bg-blue-700"
+                    >
+                      {t.uploadImage}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => folderInputRef.current?.click()}
+                      className="px-2.5 py-1 bg-amber-500 text-white rounded text-[11px] font-medium hover:bg-amber-600"
+                    >
+                      {t.openFolder}
+                    </button>
+                  </div>
                 </div>
-              ) : (
+              ) : filteredMedia.length > 0 ? (
                 <div
                   className={`grid gap-2 ${
                     thumbSize === 3 ? 'grid-cols-3' : 'grid-cols-2'
@@ -551,7 +838,7 @@ export const RightSidebar: React.FC<RightSidebarProps> = ({
                     </div>
                   ))}
                 </div>
-              )}
+              ) : null}
             </div>
 
             <div className="h-6 px-4 bg-[#eef0f3] border-t border-slate-300 flex items-center justify-center gap-2 shrink-0">

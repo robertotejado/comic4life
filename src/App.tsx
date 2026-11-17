@@ -1099,13 +1099,58 @@ export default function App() {
   const handleApplyStylePreset = useCallback(
     (preset: StylePreset) => {
       if (preset.target === 'page') {
-        updateActivePage(preset.apply as Partial<ComicPage>);
+        const applyPage = preset.apply as Partial<ComicPage>;
+        const nextBg = applyPage.backgroundColor;
+        mutateDoc((prev) => ({
+          ...prev,
+          pages: prev.pages.map((p) => {
+            if (p.id !== activePage.id) return p;
+            const nextStroke =
+              nextBg === '#000000' || nextBg === '#1e293b'
+                ? '#ffffff'
+                : nextBg
+                  ? '#000000'
+                  : null;
+            return {
+              ...p,
+              ...applyPage,
+              elements: nextStroke
+                ? p.elements.map((el) =>
+                    el.kind === 'panel' && !el.locked && (el.strokeColor === '#000000' || el.strokeColor === '#ffffff')
+                      ? { ...el, strokeColor: nextStroke }
+                      : el
+                  )
+                : p.elements,
+            };
+          }),
+        }));
         return;
       }
-      if (selectedElement && selectedElement.kind === preset.target) {
-        updateElement(selectedElement.id, preset.apply);
-        return;
+
+      if (selectedElement && !selectedElement.locked) {
+        if (selectedElement.kind === preset.target) {
+          updateElement(selectedElement.id, preset.apply);
+          return;
+        }
+        if (selectedElement.kind === 'panel') {
+          const a = preset.apply as Record<string, unknown>;
+          const mapped: Record<string, unknown> = {};
+          if (typeof a.fillColor === 'string') mapped.fillColor = a.fillColor;
+          else if (typeof a.fillTopColor === 'string') mapped.fillColor = a.fillTopColor;
+          if (typeof a.strokeColor === 'string') mapped.strokeColor = a.strokeColor;
+          if (typeof a.strokeWidth === 'number') {
+            mapped.strokeWidth = a.strokeWidth;
+            mapped.strokeEnabled = a.strokeWidth > 0;
+          }
+          if (typeof a.shadow === 'boolean') mapped.shadow = a.shadow;
+          if (typeof a.shadowColor === 'string') mapped.shadowColor = a.shadowColor;
+          if (Object.keys(mapped).length > 0) {
+            updateElement(selectedElement.id, mapped);
+            return;
+          }
+        }
       }
+
       mutateDoc((prev) => ({
         ...prev,
         pages: prev.pages.map((p) =>
@@ -1113,7 +1158,7 @@ export default function App() {
             ? {
                 ...p,
                 elements: p.elements.map((el) =>
-                  el.kind === preset.target
+                  el.kind === preset.target && !el.locked
                     ? ({ ...el, ...preset.apply } as ComicElement)
                     : el
                 ),
@@ -1122,7 +1167,7 @@ export default function App() {
         ),
       }));
     },
-    [selectedElement, activePage.id, updateActivePage, updateElement, mutateDoc]
+    [selectedElement, activePage.id, updateElement, mutateDoc]
   );
 
   const handleCyclePageStyle = useCallback(() => {
@@ -1821,10 +1866,30 @@ export default function App() {
       if (!preset) return;
       if (preset.target === 'page') {
         const targetId = explicitPageId || activePage.id;
+        const applyPage = preset.apply as Partial<ComicPage>;
+        const nextBg = applyPage.backgroundColor;
+        const nextStroke =
+          nextBg === '#000000' || nextBg === '#1e293b'
+            ? '#ffffff'
+            : nextBg
+              ? '#000000'
+              : null;
         mutateDoc((prev) => ({
           ...prev,
           pages: prev.pages.map((p) =>
-            p.id === targetId ? { ...p, ...(preset.apply as Partial<ComicPage>) } : p
+            p.id === targetId
+              ? {
+                  ...p,
+                  ...applyPage,
+                  elements: nextStroke
+                    ? p.elements.map((el) =>
+                        el.kind === 'panel' && !el.locked && (el.strokeColor === '#000000' || el.strokeColor === '#ffffff')
+                          ? { ...el, strokeColor: nextStroke }
+                          : el
+                      )
+                    : p.elements,
+                }
+              : p
           ),
         }));
         return;
@@ -1837,7 +1902,7 @@ export default function App() {
               ? {
                   ...p,
                   elements: p.elements.map((el) =>
-                    el.kind === preset.target
+                    el.kind === preset.target && !el.locked
                       ? ({ ...el, ...preset.apply } as ComicElement)
                       : el
                   ),
@@ -1847,13 +1912,31 @@ export default function App() {
         }));
         return;
       }
-      const hit = hitTestElementAt(x, y, [preset.target]);
-      if (hit) {
-        updateElement(hit.id, preset.apply);
-        setSelectedElementId(hit.id);
-      } else {
-        handleApplyStylePreset(preset);
+      const hitSame = hitTestElementAt(x, y, [preset.target]);
+      if (hitSame && !hitSame.locked) {
+        updateElement(hitSame.id, preset.apply);
+        setSelectedElementId(hitSame.id);
+        return;
       }
+      const hitAny = hitTestElementAt(x, y, ['lettering', 'balloon', 'panel']);
+      if (hitAny && !hitAny.locked && hitAny.kind === 'panel') {
+        const a = preset.apply as Record<string, unknown>;
+        const mapped: Record<string, unknown> = {};
+        if (typeof a.fillColor === 'string') mapped.fillColor = a.fillColor;
+        else if (typeof a.fillTopColor === 'string') mapped.fillColor = a.fillTopColor;
+        if (typeof a.strokeColor === 'string') mapped.strokeColor = a.strokeColor;
+        if (typeof a.strokeWidth === 'number') {
+          mapped.strokeWidth = a.strokeWidth;
+          mapped.strokeEnabled = a.strokeWidth > 0;
+        }
+        if (typeof a.shadow === 'boolean') mapped.shadow = a.shadow;
+        if (Object.keys(mapped).length > 0) {
+          updateElement(hitAny.id, mapped);
+          setSelectedElementId(hitAny.id);
+          return;
+        }
+      }
+      handleApplyStylePreset(preset);
     },
     [activePage.id, mutateDoc, hitTestElementAt, updateElement, handleApplyStylePreset]
   );

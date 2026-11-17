@@ -44,6 +44,7 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
 }) => {
   const [dragOverPageIdx, setDragOverPageIdx] = useState<number | null>(null);
   const [draggingPageIdx, setDraggingPageIdx] = useState<number | null>(null);
+  const [styleFilter, setStyleFilter] = useState<'all' | StylePreset['target']>('all');
 
   const thumbWidth = 86;
   const thumbScale = thumbWidth / doc.pageWidth;
@@ -262,19 +263,46 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
         })}
       </div>
 
-      {/* STYLES Header */}
-      <div className="h-6 bg-gradient-to-b from-[#f3f4f6] to-[#d5d8de] border-t border-b border-slate-400/80 flex items-center justify-center px-2 shrink-0">
-        <span className="text-[10px] font-bold tracking-wider text-slate-700">
+      {/* STYLES Header with compact target filter */}
+      <div className="h-7 bg-gradient-to-b from-[#f3f4f6] to-[#d5d8de] border-t border-b border-slate-400/80 flex items-center justify-between gap-1 px-1.5 shrink-0">
+        <span className="text-[10px] font-bold tracking-wider text-slate-700 truncate">
           {t.styles}
         </span>
+        <select
+          value={styleFilter}
+          onChange={(e) => setStyleFilter(e.target.value as 'all' | StylePreset['target'])}
+          className="h-5 max-w-[66px] bg-white border border-slate-400 rounded-xs px-0.5 text-[9px] font-medium text-slate-800 outline-none"
+        >
+          <option value="all">{t.allStyles}</option>
+          <option value="panel">{t.panelTargetLabel}</option>
+          <option value="balloon">{t.balloonTargetLabel}</option>
+          <option value="lettering">{t.letteringTargetLabel}</option>
+          <option value="page">{t.pageTargetLabel}</option>
+        </select>
       </div>
 
       {/* STYLES Grid (Click or Drag onto Element/Page) */}
-      <div className="h-[156px] overflow-y-auto p-2 bg-[#dfe2e7] grid grid-cols-2 gap-1.5 content-start">
-        {STYLE_PRESETS.map((preset) => {
+      <div className="h-[188px] overflow-y-auto p-1.5 bg-[#dfe2e7] grid grid-cols-2 gap-1.5 content-start">
+        {STYLE_PRESETS.filter(
+          (preset) => styleFilter === 'all' || preset.target === styleFilter
+        ).map((preset) => {
           const matchesTarget =
             preset.target === 'page' ||
             (selectedElement && selectedElement.kind === preset.target);
+          const applyObj = preset.apply as Record<string, unknown>;
+          const isOval = applyObj.shape === 'ellipse';
+          const isRounded = applyObj.shape === 'rounded';
+          const isSlant = applyObj.shape === 'skew-left' || applyObj.shape === 'skew-right';
+          const hasPadding = typeof applyObj.padding === 'number' && applyObj.padding > 0;
+          const borderless = applyObj.strokeEnabled === false;
+          const targetLabel =
+            preset.target === 'panel'
+              ? t.panelTargetLabel
+              : preset.target === 'balloon'
+                ? t.balloonTargetLabel
+                : preset.target === 'lettering'
+                  ? t.letteringTargetLabel
+                  : t.pageTargetLabel;
           return (
             <button
               key={preset.id}
@@ -285,18 +313,26 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
                 e.dataTransfer.effectAllowed = 'copy';
               }}
               onClick={() => onApplyStyle(preset)}
-              title={`${preset.name} (${preset.target})`}
-              className={`h-11 rounded-xs border flex flex-col items-center justify-center p-1 transition-all shadow-xs cursor-grab active:cursor-grabbing ${
+              title={`${preset.name} (${targetLabel})`}
+              className={`h-12 border flex flex-col items-center justify-center p-1 transition-all cursor-grab active:cursor-grabbing relative ${
+                isOval ? 'rounded-full' : isRounded ? 'rounded-lg' : 'rounded-xs'
+              } ${
                 matchesTarget
-                  ? 'ring-1 ring-blue-500/70 hover:scale-[1.03]'
+                  ? 'ring-2 ring-blue-500/80 hover:scale-[1.03]'
                   : 'opacity-85 hover:opacity-100'
               }`}
               style={{
                 backgroundColor: preset.previewBg,
-                borderColor: preset.previewBorder,
-                borderWidth: '2px',
+                borderColor: borderless ? '#cbd5e1' : preset.previewBorder,
+                borderStyle: borderless ? 'dashed' : 'solid',
+                borderWidth: borderless ? '1px' : '2px',
+                boxShadow: applyObj.shadow ? '2px 2px 4px rgba(15,23,42,0.35)' : undefined,
+                transform: isSlant ? 'skewX(-8deg)' : undefined,
               }}
             >
+              {hasPadding && (
+                <div className="absolute inset-1 border border-slate-400/50 pointer-events-none rounded-2xs" />
+              )}
               {preset.previewText ? (
                 <span
                   className="text-[9px] font-extrabold leading-none truncate max-w-full"
@@ -310,10 +346,13 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
                   {preset.previewText}
                 </span>
               ) : (
-                <span className="text-[8px] font-semibold uppercase tracking-tight text-slate-500 bg-white/80 px-1 rounded-xs">
-                  {preset.target}
+                <span className="text-[8px] font-bold leading-tight truncate max-w-full px-1 rounded-xs bg-white/85 text-slate-700">
+                  {targetLabel}
                 </span>
               )}
+              <span className="mt-0.5 text-[7px] font-medium leading-none truncate max-w-full px-0.5 rounded-xs bg-white/75 text-slate-600">
+                {preset.name}
+              </span>
             </button>
           );
         })}
