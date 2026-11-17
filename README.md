@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="build/icon.png" alt="Comic4Life Logo" width="110" />
+  <img src="electron/assets/icon.png" alt="Comic4Life Logo" width="110" />
   <h1>Comic4Life</h1>
   <p>
     <strong>Estudio de creación de cómics, novelas gráficas, tiras y guiones gráficos para escritorio y web.</strong>

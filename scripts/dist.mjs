@@ -62,6 +62,13 @@ function resolvePkgBin(pkgName, binName) {
   }
 }
 
+const iconPng = path.join(root, 'electron', 'assets', 'icon.png');
+const iconIco = path.join(root, 'electron', 'assets', 'icon.ico');
+if (!fs.existsSync(iconPng) || !fs.existsSync(iconIco)) {
+  console.log('[0/3] Generating Comic4Life desktop icons...');
+  runNode([path.join(root, 'scripts', 'generate-icons.mjs')]);
+}
+
 console.log('[1/3] Building Comic4Life web bundle for Electron...');
 const viteBin = resolvePkgBin('vite', 'vite');
 if (viteBin) {

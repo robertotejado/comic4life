@@ -5,7 +5,7 @@ electronVersion: "35.1.5"
 
 directories:
   output: release
-  buildResources: build
+  buildResources: electron/assets
 
 files:
   - dist/**/*
@@ -18,8 +18,7 @@ files:
 asar: true
 
 win:
-  icon: build/icon.ico
-  artifactName: "${productName}-${version}-win-${arch}.${ext}"
+  icon: electron/assets/icon.ico
   target:
     - target: nsis
       arch:
@@ -29,17 +28,21 @@ win:
         - x64
 
 nsis:
+  artifactName: "${productName}-${version}-win-${arch}-setup.${ext}"
   oneClick: false
   perMachine: false
   allowToChangeInstallationDirectory: true
   createDesktopShortcut: true
   createStartMenuShortcut: true
   shortcutName: Comic4Life
-  installerIcon: build/icon.ico
-  uninstallerIcon: build/icon.ico
+  installerIcon: electron/assets/icon.ico
+  uninstallerIcon: electron/assets/icon.ico
+
+portable:
+  artifactName: "${productName}-${version}-win-${arch}-portable.${ext}"
 
 mac:
-  icon: build/icon.png
+  icon: electron/assets/icon.png
   category: public.app-category.graphics-design
   artifactName: "${productName}-${version}-mac-${arch}.${ext}"
   target:
@@ -54,7 +57,7 @@ dmg:
   title: "${productName} ${version}"
 
 linux:
-  icon: build/icon.png
+  icon: electron/assets/icon.png
   category: Graphics;2DGraphics;
   maintainer: Comic4Life <support@comic4life.local>
   synopsis: Desktop comic creation studio

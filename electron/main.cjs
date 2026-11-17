@@ -46,7 +46,7 @@ function buildMacMenu() {
 }
 
 function createWindow() {
-  const iconPath = path.join(__dirname, '../build/icon.png');
+  const iconPath = path.join(__dirname, 'assets/icon.png');
   mainWindow = new BrowserWindow({
     width: 1440,
     height: 920,
