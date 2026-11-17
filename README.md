@@ -18,7 +18,7 @@
 ## Acerca del proyecto
 
 **Comic4Life** es una aplicación de diseño y maquetación de cómics pensada como estudio de escritorio completo: combina composiciones de viñetas listas para usar, globos de diálogo vectoriales con cola editable, rotulación estilizada (*lettering*), edición e integración directa de imágenes dentro de cada viñeta, inspector detallado de página y exportación multi-formato en alta resolución.
-  <img src="sample.png" alt="sample" width="110" />
+  <img src="sample.png" alt="sample"  />
 Funciona tanto en navegador como empaquetada de forma nativa con **Electron** para **Windows (`.exe`)**, **macOS (`.dmg` / `.zip` universal)** y **Linux (`.deb` / `.AppImage`)**.
 
 ---
