@@ -43,6 +43,9 @@ jobs:
       - name: Install Electron & electron-builder
         run: npm install --no-save electron@35.1.5 electron-builder@25.1.8
 
+      - name: Ensure desktop icons exist
+        run: node scripts/generate-icons.mjs
+
       - name: Build Electron web bundle
         run: npm run build:electron
 
